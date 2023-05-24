@@ -82,6 +82,43 @@ class PersonController {
         const age = date - birthdayPerson
         return age    
     }
+    //Mostrar maiores de idade
+    static async listOfLegalAge(req,res) {
+        try {
+            const allPeople = await person.find();
+            const allPeopleAgeCalculate = allPeople.map(person => {
+                return {
+                    ...person._doc,
+                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    age: PersonController.ageCalculate(person.birthday),
+                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                }
+            });
+            const legalAgePeople = allPeopleAgeCalculate.filter(person => person.isLegalAge);
+            res.status(200).json(legalAgePeople);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Erro ao obter pessoas maiores de idade.' });
+        }
+    }
+    static async listOfLegalAge(req,res) {
+        try {
+            const allPeople = await person.find();
+            const allPeopleAgeCalculate = allPeople.map(person => {
+                return {
+                    ...person._doc,
+                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    age: PersonController.ageCalculate(person.birthday),
+                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                }
+            });
+            const NotlegalAgePeople = allPeopleAgeCalculate.filter(person => person.isLegalAge == false);
+            res.status(200).json(NotlegalAgePeople);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Erro ao obter pessoas menores de idade.' });
+        }
+    }
 }
 
 module.exports = PersonController;
