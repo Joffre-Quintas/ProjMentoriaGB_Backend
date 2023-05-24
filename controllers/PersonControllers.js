@@ -138,6 +138,24 @@ class PersonController {
             console.log(err)
         }
     }
+    //Listar por ordem alfabética decrescente
+    static async listOfDescAlfabetic(req,res) {
+        try {
+            const allPeople = await person.find();
+            const allPeopleCompletName = await allPeople.map(person => {
+                return{
+                    completName: `${person.name} ${person.lastName}`,
+                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    age: PersonController.ageCalculate(person.birthday),
+                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                }
+            })
+            const listSorted = await allPeopleCompletName.sort((personA,personB) => personA.completName.localeCompare(personB.completName)).reverse()
+            res.status(200).json(listSorted)                       
+        } catch (err) {
+            console.log(err)
+        }
+    }
 }
 
 module.exports = PersonController;
