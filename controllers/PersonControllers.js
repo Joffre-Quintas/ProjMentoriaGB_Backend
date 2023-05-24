@@ -82,7 +82,7 @@ class PersonController {
         const age = date - birthdayPerson
         return age    
     }
-    //Mostrar maiores de idade
+    //Listar maiores de idade
     static async listOfLegalAge(req,res) {
         try {
             const allPeople = await person.find();
@@ -101,6 +101,7 @@ class PersonController {
             res.status(500).json({ message: 'Erro ao obter pessoas maiores de idade.' });
         }
     }
+    //Listar menores de idade
     static async listOfLegalAge(req,res) {
         try {
             const allPeople = await person.find();
@@ -117,6 +118,24 @@ class PersonController {
         } catch (err) {
             console.log(err);
             res.status(500).json({ message: 'Erro ao obter pessoas menores de idade.' });
+        }
+    }
+    //Listar por ordem alfabética
+    static async listOfAscAlfabetic(req,res) {
+        try {
+            const allPeople = await person.find();
+            const allPeopleCompletName = await allPeople.map(person => {
+                return{
+                    completName: `${person.name} ${person.lastName}`,
+                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    age: PersonController.ageCalculate(person.birthday),
+                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                }
+            })
+            const listSorted = await allPeopleCompletName.sort((personA,personB) => personA.completName.localeCompare(personB.completName))
+            res.status(200).json(listSorted)                       
+        } catch (err) {
+            console.log(err)
         }
     }
 }
