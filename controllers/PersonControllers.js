@@ -1,4 +1,6 @@
 const person = require('../models/Person');
+const { ageCalculate } = require('../util');
+
 
 class PersonController {
     //Listar todas as pessoas
@@ -8,9 +10,9 @@ class PersonController {
             const allPeopleAgeCalculate = allPeople.map(person => {
                 return {
                     ...person._doc,
-                    birthday: `${String(person.birthday.getDate()).padStart(2,'0')}/${String((person.birthday.getMonth() + 1)).padStart(2,'0')}/${person.birthday.getFullYear()}`,
-                    age: PersonController.ageCalculate(person.birthday),
-                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                    birthday: person.birthday.toLocaleDateString('pt-br',{timeZone: 'Etc/Greenwich'}),
+                    age: ageCalculate(person.birthday),
+                    isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             })
             res.status(200).json(allPeopleAgeCalculate)
@@ -76,12 +78,12 @@ class PersonController {
         }
     }
     //Função para calcular idade da pessoa
-    static ageCalculate(birthday) {
-        const date = new Date().getFullYear()
-        const birthdayPerson = new Date(birthday).getFullYear()
-        const age = date - birthdayPerson
-        return age    
-    }
+    // static ageCalculate(birthday) {
+    //     const date = new Date().getFullYear()
+    //     const birthdayPerson = new Date(birthday).getFullYear()
+    //     const age = date - birthdayPerson
+    //     return age    
+    // }
     //Listar maiores de idade
     static async listOfLegalAge(req,res) {
         try {
@@ -90,8 +92,8 @@ class PersonController {
                 return {
                     ...person._doc,
                     birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
-                    age: PersonController.ageCalculate(person.birthday),
-                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                    age: ageCalculate(person.birthday),
+                    isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             });
             const legalAgePeople = allPeopleAgeCalculate.filter(person => person.isLegalAge);
@@ -109,8 +111,8 @@ class PersonController {
                 return {
                     ...person._doc,
                     birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
-                    age: PersonController.ageCalculate(person.birthday),
-                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                    age: ageCalculate(person.birthday),
+                    isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             });
             const NotlegalAgePeople = allPeopleAgeCalculate.filter(person => person.isLegalAge == false);
@@ -128,8 +130,8 @@ class PersonController {
                 return{
                     completName: `${person.name} ${person.lastName}`,
                     birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
-                    age: PersonController.ageCalculate(person.birthday),
-                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                    age: ageCalculate(person.birthday),
+                    isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             })
             const listSorted = await allPeopleCompletName.sort((personA,personB) => personA.completName.localeCompare(personB.completName))
@@ -146,8 +148,8 @@ class PersonController {
                 return{
                     completName: `${person.name} ${person.lastName}`,
                     birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
-                    age: PersonController.ageCalculate(person.birthday),
-                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                    age: ageCalculate(person.birthday),
+                    isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             })
             const listSorted = await allPeopleCompletName.sort((personA,personB) => personA.completName.localeCompare(personB.completName)).reverse()
