@@ -5,11 +5,20 @@ class PersonController {
     static async showAllPeople(req, res) {
         try {
             const allPeople = await person.find()
-            res.status(200).json(allPeople)
+            const allPeopleAgeCalculate = allPeople.map(person => {
+                return {
+                    ...person._doc,
+                    birthday: `${String(person.birthday.getDate()).padStart(2,'0')}/${String((person.birthday.getMonth() + 1)).padStart(2,'0')}/${person.birthday.getFullYear()}`,
+                    age: PersonController.ageCalculate(person.birthday),
+                    isLegalAge: PersonController.ageCalculate(person.birthday) >= 18
+                }
+            })
+            res.status(200).json(allPeopleAgeCalculate)
         } catch (err) {
             console.log(err)
         }
     }
+    //Criar uma nova pessoa
     static async createNewPerson(req,res) {
         try {
             const newPerson = req.body;
@@ -19,6 +28,7 @@ class PersonController {
             console.log(err)
         }
     }
+    //Encontrar uma pessoa
     static async findOnePerson(req, res) {
         const { uuid } = await req.params;
         const onePerson = await person.findOne({uuid: uuid})
@@ -33,6 +43,7 @@ class PersonController {
             }
         }
     }
+    //Deletar uma pessoa
     static async deletePerson(req,res) {
         const { uuid } = await req.params;
         const onePerson = await person.findOne({uuid: uuid})
@@ -48,6 +59,7 @@ class PersonController {
             }
         }
     }
+    //Atualizar pessoa
     static async updatePerson(req,res) {
         const { uuid } = await req.params;
         const onePerson = await person.findOne({uuid: uuid})
@@ -62,6 +74,13 @@ class PersonController {
                 console.log(err)
             }
         }
+    }
+    //Função para calcular idade da pessoa
+    static ageCalculate(birthday) {
+        const date = new Date().getFullYear()
+        const birthdayPerson = new Date(birthday).getFullYear()
+        const age = date - birthdayPerson
+        return age    
     }
 }
 
