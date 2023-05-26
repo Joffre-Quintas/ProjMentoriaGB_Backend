@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', PersonController.showAllPeople);
 router.get('/list-of-legalage', PersonController.listOfLegalAge)
-router.get('/list-of-not-legalage', PersonController.listOfLegalAge)
+router.get('/list-of-not-legalage', PersonController.listOfNotLegalAge)
 router.get('/list-of-asc-alfabetic', PersonController.listOfAscAlfabetic)
 router.get('/list-of-desc-alfabetic', PersonController.listOfDescAlfabetic)
 router.post('/create-person', PersonController.createNewPerson);

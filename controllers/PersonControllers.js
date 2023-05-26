@@ -77,26 +77,19 @@ class PersonController {
             }
         }
     }
-    //Função para calcular idade da pessoa
-    // static ageCalculate(birthday) {
-    //     const date = new Date().getFullYear()
-    //     const birthdayPerson = new Date(birthday).getFullYear()
-    //     const age = date - birthdayPerson
-    //     return age    
-    // }
-    //Listar maiores de idade
+
     static async listOfLegalAge(req,res) {
         try {
             const allPeople = await person.find();
             const allPeopleAgeCalculate = allPeople.map(person => {
                 return {
                     ...person._doc,
-                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    birthday: person.birthday.toLocaleDateString('pt-br',{timeZone: 'Etc/Greenwich'}),
                     age: ageCalculate(person.birthday),
                     isLegalAge: ageCalculate(person.birthday) >= 18
                 }
             });
-            const legalAgePeople = allPeopleAgeCalculate.filter(person => person.isLegalAge);
+            const legalAgePeople = await allPeopleAgeCalculate.filter(person => person.isLegalAge == true);
             res.status(200).json(legalAgePeople);
         } catch (err) {
             console.log(err);
@@ -104,13 +97,13 @@ class PersonController {
         }
     }
     //Listar menores de idade
-    static async listOfLegalAge(req,res) {
+    static async listOfNotLegalAge(req,res) {
         try {
             const allPeople = await person.find();
             const allPeopleAgeCalculate = allPeople.map(person => {
                 return {
                     ...person._doc,
-                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    birthday: person.birthday.toLocaleDateString('pt-br',{timeZone: 'Etc/Greenwich'}),
                     age: ageCalculate(person.birthday),
                     isLegalAge: ageCalculate(person.birthday) >= 18
                 }
@@ -129,7 +122,7 @@ class PersonController {
             const allPeopleCompletName = await allPeople.map(person => {
                 return{
                     completName: `${person.name} ${person.lastName}`,
-                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    birthday: person.birthday.toLocaleDateString('pt-br',{timeZone: 'Etc/Greenwich'}),
                     age: ageCalculate(person.birthday),
                     isLegalAge: ageCalculate(person.birthday) >= 18
                 }
@@ -147,7 +140,7 @@ class PersonController {
             const allPeopleCompletName = await allPeople.map(person => {
                 return{
                     completName: `${person.name} ${person.lastName}`,
-                    birthday: `${String(person.birthday.getDate()).padStart(2, '0')}/${String((person.birthday.getMonth() + 1)).padStart(2, '0')}/${person.birthday.getFullYear()}`,
+                    birthday: person.birthday.toLocaleDateString('pt-br',{timeZone: 'Etc/Greenwich'}),
                     age: ageCalculate(person.birthday),
                     isLegalAge: ageCalculate(person.birthday) >= 18
                 }
